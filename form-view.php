@@ -22,14 +22,12 @@
             </li>
         </ul>
     </nav>
-    <form method="POST" action="index.php">
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
-                <input type="text" id="email" name="email" class="form-control"/> <br>
-                <?php if (isset($success_msg)) { ?>
-                    <p><?php echo $invalid_msg ?></p>
-                <?php }?>
+                <input type="text" id="email" name="email" class="form-control"/>
+                <span class="error">* <?php echo $emailErr;?></span>
             </div>
             <div></div>
         </div>
@@ -82,6 +80,9 @@
 <style>
     footer {
         text-align: center;
+    }
+    .error {
+        color: #FF0000;
     }
 </style>
 </body>

@@ -38,8 +38,8 @@ $products = [
 
 $totalValue = 0;
 
-$email = "";
-$emailErr = "";
+$email = $street = $street_number = $city = $zip_code = "";
+$emailErr = $streetErr = $street_numberErr = $cityErr = $zip_codeErr= "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["email"])) {
@@ -50,6 +50,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $emailErr = "Invalid email format";
         }
+    }
+
+    if (empty($_POST["street"])) {
+        $streetErr = "Street is required";
+    } else {
+        $street = test_input($_POST["street"]);
+    }
+
+    if (empty($_POST["streetnumber"])) {
+        $street_numberErr = "Street number is required";
+    } else {
+        $street_number = test_input($_POST["streetnumber"]);
+    }
+
+    if (empty($_POST["city"])) {
+        $cityErr = "City name is required";
+    } else {
+        $city = test_input($_POST["city"]);
+    }
+
+    if (empty($_POST["zipcode"])) {
+        $zip_codeErr = "zip code is required";
+    } else {
+        $zip_code = test_input($_POST["zipcode"]);
     }
 }
 

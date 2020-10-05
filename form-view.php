@@ -22,11 +22,14 @@
             </li>
         </ul>
     </nav>
-    <form method="post">
+    <form method="POST" action="index.php">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
-                <input type="text" id="email" name="email" class="form-control"/>
+                <input type="text" id="email" name="email" class="form-control"/> <br>
+                <?php if (isset($success_msg)) { ?>
+                    <p><?php echo $invalid_msg ?></p>
+                <?php }?>
             </div>
             <div></div>
         </div>

@@ -2,6 +2,10 @@
 //this line makes PHP behave in a more strict way
 declare(strict_types=1);
 
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 //we are going to use session variables so we need to enable sessions
 session_start();
 
@@ -33,5 +37,14 @@ $products = [
 ];
 
 $totalValue = 0;
+$invalid_msg = '';
+
+if (isset($_POST['email'])) {
+    if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+        $invalid_msg = "border-color: red";
+    }
+}
+
+
 
 require 'form-view.php';

@@ -22,6 +22,9 @@
             </li>
         </ul>
     </nav>
+    <div class="alert alert-success" role="alert">
+        <?php echo $success_order; ?>
+    </div>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
         <div class="form-row">
             <div class="form-group col-md-6">

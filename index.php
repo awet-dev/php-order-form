@@ -38,6 +38,8 @@ $products = [
 
 $totalValue = 0;
 
+$success_order = "Fill the form to order your food?";
+
 $email = $street = $street_number = $city = $zip_code = "";
 $emailErr = $streetErr = $street_numberErr = $cityErr = $zip_codeErr= "";
 
@@ -81,6 +83,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!is_numeric($zip_code)) {
             $zip_codeErr = "Zip code must be only number";
         }
+    }
+    if ($emailErr === "" && $streetErr === "" && $street_numberErr === "" && $cityErr === "" && $zip_codeErr === "") {
+        $success_order = "Your order had been send";
     }
 }
 

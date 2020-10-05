@@ -62,6 +62,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $street_numberErr = "Street number is required";
     } else {
         $street_number = test_input($_POST["streetnumber"]);
+        // check if input value is only number
+        if (!is_numeric($street_number)) {
+            $street_numberErr = "Street number must be only number";
+        }
     }
 
     if (empty($_POST["city"])) {
@@ -74,6 +78,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $zip_codeErr = "zip code is required";
     } else {
         $zip_code = test_input($_POST["zipcode"]);
+        if (!is_numeric($zip_code)) {
+            $zip_codeErr = "Zip code must be only number";
+        }
     }
 }
 

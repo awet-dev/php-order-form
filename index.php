@@ -25,13 +25,20 @@ if (!isset($_SESSION["zipcode"])) {
     $_SESSION["zipcode"] = "";
 }
 
+if(!isset($_SESSION['products'])) {
+    $_SESSION['products'] = [];
+}
+
+
 function whatIsHappening() {
-     echo '<h2>$_GET</h2>';
+    /*
+    echo '<h2>$_GET</h2>';
     var_dump($_GET);
     echo '<h2>$_POST</h2>';
     var_dump($_POST);
     echo '<h2>$_COOKIE</h2>';
     var_dump($_COOKIE);
+     */
     echo '<h2>$_SESSION</h2>';
     var_dump($_SESSION);
 }
@@ -67,7 +74,7 @@ $totalValue = 0;
 
 $success_order = "Fill the form to order your food?";
 $email = $street = $street_number = $city = $zip_code = "";
-$emailErr = $streetErr = $street_numberErr = $cityErr = $zip_codeErr= "";
+$emailErr = $streetErr = $street_numberErr = $cityErr = $zip_codeErr = $productErr = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["email"])) {
@@ -110,6 +117,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $zip_codeErr = "Zip code must be only number";
         }
     }
+
+    if(empty($_POST['products'])) {
+        $productErr = "Select at least one item!";
+    }
 }
 
 if(isset($_POST['button'])) {
@@ -121,7 +132,16 @@ if(isset($_POST['button'])) {
     $_SESSION['streetnumber'] = $street_number;
     $_SESSION['city'] = $city;
     $_SESSION['zipcode'] = $zip_code;
+    if (isset($_POST['products'])) {
+        foreach ($_POST['products'] as $value) {
+            array_push($_SESSION['products'], $value);
+            $_SESSION['products'] = array_unique($_SESSION['products']);
+
+        }
+    }
 }
+
+whatIsHappening();
 
 function test_input($data) {
     $data = trim($data);

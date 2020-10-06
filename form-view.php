@@ -68,9 +68,10 @@
             <legend>Products</legend>
             <?php foreach ($products AS $i => $product): ?>
                 <label>
-                    <input type="checkbox" value="1" name="products[<?php echo $i ?>]"/> <?php echo $product['name'] ?> -
+                    <input type="checkbox" value="<?php echo $product['name'] ?>" name="products[<?php echo $i ?>]"/> <?php echo $product['name'] ?> -
                     &euro; <?php echo number_format($product['price'], 2) ?></label><br />
             <?php endforeach; ?>
+            <span class="error">* <?php echo $productErr;?></span>
         </fieldset>
 
         <label>

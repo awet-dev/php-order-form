@@ -9,13 +9,31 @@ error_reporting(E_ALL);
 //we are going to use session variables so we need to enable sessions
 session_start();
 
+if (!isset($_SESSION["email"])) {
+    $_SESSION["email"] = "";
+}
+if (!isset($_SESSION["street"])) {
+    $_SESSION["street"] = "";
+}
+if (!isset($_SESSION["city"])) {
+    $_SESSION["city"] = "";
+}
+if (!isset($_SESSION["streetnumber"])) {
+    $_SESSION["streetnumber"] = "";
+}
+if (!isset($_SESSION["zipcode"])) {
+    $_SESSION["zipcode"] = "";
+}
+
 function whatIsHappening() {
-    echo '<h2>$_GET</h2>';
+    /*
+     echo '<h2>$_GET</h2>';
     var_dump($_GET);
     echo '<h2>$_POST</h2>';
     var_dump($_POST);
     echo '<h2>$_COOKIE</h2>';
     var_dump($_COOKIE);
+     */
     echo '<h2>$_SESSION</h2>';
     var_dump($_SESSION);
 }
@@ -39,7 +57,6 @@ $products = [
 $totalValue = 0;
 
 $success_order = "Fill the form to order your food?";
-
 $email = $street = $street_number = $city = $zip_code = "";
 $emailErr = $streetErr = $street_numberErr = $cityErr = $zip_codeErr= "";
 
@@ -84,9 +101,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $zip_codeErr = "Zip code must be only number";
         }
     }
+}
+
+if(isset($_POST['button'])) {
     if ($emailErr === "" && $streetErr === "" && $street_numberErr === "" && $cityErr === "" && $zip_codeErr === "") {
         $success_order = "Your order had been send";
     }
+    $_SESSION['email'] = $email;
+    $_SESSION['street'] = $street;
+    $_SESSION['streetnumber'] = $street_number;
+    $_SESSION['city'] = $city;
+    $_SESSION['zipcode'] = $zip_code;
 }
 
 function test_input($data) {
@@ -97,5 +122,5 @@ function test_input($data) {
 }
 
 
-
+whatIsHappening();
 require 'form-view.php';

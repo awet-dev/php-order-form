@@ -29,6 +29,10 @@ if(!isset($_SESSION['products'])) {
     $_SESSION['products'] = [];
 }
 
+if (!isset($_SESSION['express'])) {
+    $_SESSION['express'] = '';
+}
+
 
 function whatIsHappening() {
     /*
@@ -119,21 +123,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+$delivery_time = 0;
 if(isset($_POST['button'])) {
     if ($emailErr === "" && $streetErr === "" && $street_numberErr === "" && $cityErr === "" && $zip_codeErr === "") {
-        $success_order = "Your order had been send";
+        if(isset($_GET['express_deliver'])) {
+            $delivery_time = date("H:i", strtotime('+2 hour'));
+        } else {
+            $delivery_time = date("H:i", strtotime('+45 minutes'));;
+        }
+        $success_order = "Your order had been send, Expected time delivery at " . $delivery_time;
     }
     $_SESSION['email'] = $email;
     $_SESSION['street'] = $street;
     $_SESSION['streetnumber'] = $street_number;
     $_SESSION['city'] = $city;
     $_SESSION['zipcode'] = $zip_code;
+    if (isset($_POST['express_delivery'])) {
+        $_SESSION['express'] = $_POST['express_delivery'];
+    } else {
+        $_SESSION['express'] = '';
+    }
     if (isset($_POST['products'])) {
         foreach ($_POST['products'] as $value) {
             array_push($_SESSION['products'], $value);
             $_SESSION['products'] = array_unique($_SESSION['products']);
         }
+
     }
+
+    /*
+    foreach ($_POST['products'] AS $i => $prod) {
+            if (isset($_SESSION['products']) && in_array($prod['name'], $_SESSION['products'])) {
+                echo "checked = 'checked'";
+            }
+        }
+     */
+
     if(empty($_SESSION['products'])) {
         $productErr = "Select at least one item!";
     } else {

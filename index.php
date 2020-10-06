@@ -117,10 +117,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $zip_codeErr = "Zip code must be only number";
         }
     }
-
-    if(empty($_POST['products'])) {
-        $productErr = "Select at least one item!";
-    }
 }
 
 if(isset($_POST['button'])) {
@@ -136,8 +132,12 @@ if(isset($_POST['button'])) {
         foreach ($_POST['products'] as $value) {
             array_push($_SESSION['products'], $value);
             $_SESSION['products'] = array_unique($_SESSION['products']);
-
         }
+    }
+    if(empty($_SESSION['products'])) {
+        $productErr = "Select at least one item!";
+    } else {
+        $productErr = '';
     }
 }
 

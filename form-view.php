@@ -68,8 +68,8 @@
             <legend>Products</legend>
             <?php foreach ($products AS $i => $product): ?>
                 <label>
-                    <input type="checkbox" value="<?php echo $product['price'] ?>" name="products[<?php echo $i ?>]" <?php if (!empty($_SESSION['products']) && in_array($product['name'], $_SESSION['products'])) { echo "checked = 'checked'";}?>/> <?php echo $product['name'] ?> -
-                    &euro; <?php echo number_format($product['price'], 2) ?></label><br />
+                    <input type="checkbox" value="<?php echo $product['name'] ?>" name="products[<?php echo $i ?>]" <?php if (!empty($_SESSION['products']) && in_array($product['name'], $_SESSION['products'])) { echo "checked = 'checked'";}?>/> <?php echo $product['name'] ?> -
+                    &euro; <?php echo number_format($product['price'], 2);?></label><br />
             <?php endforeach; ?>
             <span class="error">* <?php echo $productErr;?></span>
         </fieldset>

@@ -129,9 +129,11 @@ if(isset($_POST['button'])) {
         if(isset($_GET['express_deliver'])) {
             $delivery_time = date("H:i", strtotime('+2 hour'));
         } else {
-            $delivery_time = date("H:i", strtotime('+45 minutes'));;
+            $delivery_time = date("H:i", strtotime('+45 minutes'));
         }
         $success_order = "Your order had been send, Expected time delivery at " . $delivery_time;
+
+        mail($email, "your food order", $success_order);
     }
     $_SESSION['email'] = $email;
     $_SESSION['street'] = $street;
@@ -146,13 +148,19 @@ if(isset($_POST['button'])) {
     if (isset($_POST['products'])) {
         foreach ($_POST['products'] as $value) {
             array_push($_SESSION['products'], $value);
-            $totalValue += array_sum($_SESSION['products']);
+            $_SESSION['products'] = array_unique($_SESSION['products']);
         }
     }
     if(empty($_SESSION['products'])) {
         $productErr = "Select at least one item!";
     } else {
         $productErr = '';
+    }
+
+    foreach ($products AS $i => $product) {
+        if (!empty($_SESSION['products']) && in_array($product['name'], $_SESSION['products'])) {
+            $totalValue += number_format($product['price'], 2);
+        }
     }
 }
 whatIsHappening();

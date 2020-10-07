@@ -145,20 +145,13 @@ if(isset($_POST['button'])) {
     }
     if (isset($_POST['products'])) {
         foreach ($_POST['products'] as $value) {
+            $key = array_search($value, $products);
+            $totalValue += $products[$key]['price'];
             array_push($_SESSION['products'], $value);
             $_SESSION['products'] = array_unique($_SESSION['products']);
-        }
 
+        }
     }
-
-    /*
-    foreach ($_POST['products'] AS $i => $prod) {
-            if (isset($_SESSION['products']) && in_array($prod['name'], $_SESSION['products'])) {
-                echo "checked = 'checked'";
-            }
-        }
-     */
-
     if(empty($_SESSION['products'])) {
         $productErr = "Select at least one item!";
     } else {
@@ -177,8 +170,7 @@ function test_input($data) {
 
 require 'form-view.php';
 
-
-// to calculate the total mount of money spend
-// 1. the access to each price of the checked product
+// ======= to calculate the total mount of money spend ======= //
+// 1. the access to the price of checked product
 // 2. save it in to total price variable
 // 3. then save the total price in session

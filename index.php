@@ -145,11 +145,8 @@ if(isset($_POST['button'])) {
     }
     if (isset($_POST['products'])) {
         foreach ($_POST['products'] as $value) {
-            $key = array_search($value, $products);
-            $totalValue += $products[$key]['price'];
             array_push($_SESSION['products'], $value);
-            $_SESSION['products'] = array_unique($_SESSION['products']);
-
+            $totalValue += array_sum($_SESSION['products']);
         }
     }
     if(empty($_SESSION['products'])) {
@@ -158,7 +155,6 @@ if(isset($_POST['button'])) {
         $productErr = '';
     }
 }
-
 whatIsHappening();
 
 function test_input($data) {

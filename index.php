@@ -176,3 +176,9 @@ function test_input($data) {
 }
 
 require 'form-view.php';
+
+
+// to calculate the total mount of money spend
+// 1. the access to each price of the checked product
+// 2. save it in to total price variable
+// 3. then save the total price in session

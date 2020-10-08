@@ -18,8 +18,8 @@ if (!isset($_SESSION["street"])) {
 if (!isset($_SESSION["city"])) {
     $_SESSION["city"] = "";
 }
-if (!isset($_SESSION["streetnumber"])) {
-    $_SESSION["streetnumber"] = "";
+if (!isset($_SESSION["street_number"])) {
+    $_SESSION["street_number"] = "";
 }
 if (!isset($_SESSION["zipcode"])) {
     $_SESSION["zipcode"] = "";
@@ -29,8 +29,11 @@ if(!isset($_SESSION['products'])) {
     $_SESSION['products'] = [];
 }
 
-if (!isset($_SESSION['express'])) {
-    $_SESSION['express'] = '';
+if (!isset($_SESSION['express_delivery'])) {
+    $_SESSION['express_delivery'] = '';
+}
+if (!isset($_SESSION['total_price'])) {
+    $_SESSION['total_price'] = 0;
 }
 
 
@@ -74,6 +77,18 @@ if(isset($_GET['food'])) {
         ];
     }
 }
+
+$all_products = [
+    ['name' => 'Club Ham', 'price' => 3.20],
+    ['name' => 'Club Cheese', 'price' => 3],
+    ['name' => 'Club Cheese & Ham', 'price' => 4],
+    ['name' => 'Club Chicken', 'price' => 4],
+    ['name' => 'Club Salmon', 'price' => 5],
+    ['name' => 'Cola', 'price' => 2],
+    ['name' => 'Fanta', 'price' => 2],
+    ['name' => 'Sprite', 'price' => 2],
+    ['name' => 'Ice-tea', 'price' => 3],
+];
 $totalValue = 0;
 
 $success_order = "Fill the form to order your food?";
@@ -97,10 +112,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $street = test_input($_POST["street"]);
     }
 
-    if (empty($_POST["streetnumber"])) {
+    if (empty($_POST["street_number"])) {
         $street_numberErr = "Street number is required";
     } else {
-        $street_number = test_input($_POST["streetnumber"]);
+        $street_number = test_input($_POST["street_number"]);
         // check if input value is only number
         if (!is_numeric($street_number)) {
             $street_numberErr = "Street number must be only number";
@@ -123,13 +138,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+
 $delivery_time = 0;
 if(isset($_POST['button'])) {
     if ($emailErr === "" && $streetErr === "" && $street_numberErr === "" && $cityErr === "" && $zip_codeErr === "") {
-        if(isset($_GET['express_deliver'])) {
-            $delivery_time = date("H:i", strtotime('+2 hour'));
-        } else {
+        if(isset($_POST['express_delivery'])) {
             $delivery_time = date("H:i", strtotime('+45 minutes'));
+            $totalValue += intval($_POST['express_delivery']);
+        } else {
+            $delivery_time = date("H:i", strtotime('+2 hour'));
         }
         $success_order = "Your order had been send, Expected time delivery at " . $delivery_time;
 
@@ -137,13 +154,13 @@ if(isset($_POST['button'])) {
     }
     $_SESSION['email'] = $email;
     $_SESSION['street'] = $street;
-    $_SESSION['streetnumber'] = $street_number;
+    $_SESSION['street_number'] = $street_number;
     $_SESSION['city'] = $city;
     $_SESSION['zipcode'] = $zip_code;
     if (isset($_POST['express_delivery'])) {
-        $_SESSION['express'] = $_POST['express_delivery'];
+        $_SESSION['express_delivery'] = $_POST['express_delivery'];
     } else {
-        $_SESSION['express'] = '';
+        $_SESSION['express_delivery'] = '';
     }
     if (isset($_POST['products'])) {
         foreach ($_POST['products'] as $value) {
@@ -157,11 +174,13 @@ if(isset($_POST['button'])) {
         $productErr = '';
     }
 
-    foreach ($products AS $i => $product) {
+    foreach ($all_products AS $i => $product) {
         if (!empty($_SESSION['products']) && in_array($product['name'], $_SESSION['products'])) {
-            $totalValue += number_format($product['price'], 2);
+            $totalValue += round($product['price'], 2);
         }
     }
+
+    $_SESSION['total_price'] = $totalValue;
 }
 whatIsHappening();
 

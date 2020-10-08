@@ -45,8 +45,8 @@
                     <span class="error">* <?php echo $streetErr;?></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="streetnumber">Street number:</label>
-                    <input type="text" id="streetnumber" name="streetnumber" class="form-control" value="<?php echo $_SESSION['streetnumber'];?>"/>
+                    <label for="street_number">Street number:</label>
+                    <input type="text" id="street_number" name="street_number" class="form-control" value="<?php echo $_SESSION['street_number'];?>"/>
                     <span class="error">* <?php echo $street_numberErr;?></span>
                 </div>
             </div>
@@ -75,14 +75,14 @@
         </fieldset>
 
         <label>
-            <input type="checkbox" name="express_delivery" value="5" <?php if (!empty($_SESSION['express'])) { echo "checked = 'checked'";}?>/>
+            <input type="checkbox" name="express_delivery" value="5" <?php if (!empty($_SESSION['express_delivery'])) { echo "checked = 'checked'";}?>/>
             Express delivery (+ 5 EUR)
         </label>
 
         <button type="submit" name="button" class="btn btn-primary">Order!</button>
     </form>
 
-    <footer>You already ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
+    <footer>You already ordered <strong>&euro; <?php echo $_SESSION['total_price'] ?></strong> in food and drinks.</footer>
 </div>
 
 <style>

@@ -51,44 +51,29 @@ function whatIsHappening() {
 }
 
 //your products with their price.
-$products = [
+$food = [
     ['name' => 'Club Ham', 'price' => 3.20],
     ['name' => 'Club Cheese', 'price' => 3],
     ['name' => 'Club Cheese & Ham', 'price' => 4],
     ['name' => 'Club Chicken', 'price' => 4],
     ['name' => 'Club Salmon', 'price' => 5]
 ];
-
-if(isset($_GET['food'])) {
-    if ($_GET['food'] == 1) {
-        $products = [
-            ['name' => 'Club Ham', 'price' => 3.20],
-            ['name' => 'Club Cheese', 'price' => 3],
-            ['name' => 'Club Cheese & Ham', 'price' => 4],
-            ['name' => 'Club Chicken', 'price' => 4],
-            ['name' => 'Club Salmon', 'price' => 5]
-        ];
-    } else if ($_GET['food'] == 0) {
-        $products = [
-            ['name' => 'Cola', 'price' => 2],
-            ['name' => 'Fanta', 'price' => 2],
-            ['name' => 'Sprite', 'price' => 2],
-            ['name' => 'Ice-tea', 'price' => 3],
-        ];
-    }
-}
-
-$all_products = [
-    ['name' => 'Club Ham', 'price' => 3.20],
-    ['name' => 'Club Cheese', 'price' => 3],
-    ['name' => 'Club Cheese & Ham', 'price' => 4],
-    ['name' => 'Club Chicken', 'price' => 4],
-    ['name' => 'Club Salmon', 'price' => 5],
+$drink = [
     ['name' => 'Cola', 'price' => 2],
     ['name' => 'Fanta', 'price' => 2],
     ['name' => 'Sprite', 'price' => 2],
     ['name' => 'Ice-tea', 'price' => 3],
 ];
+if(isset($_GET['food'])) {
+    if ($_GET['food'] == 1) {
+        $products = $food;
+    } else {
+        $products = $drink;
+    }
+} else {
+    $products = $food;
+}
+
 $totalValue = 0;
 
 $success_order = "Fill the form to order your food?";
@@ -174,12 +159,12 @@ if(isset($_POST['button'])) {
         $productErr = '';
     }
 
+    $all_products = array_merge($food, $drink);
     foreach ($all_products AS $i => $product) {
         if (!empty($_SESSION['products']) && in_array($product['name'], $_SESSION['products'])) {
             $totalValue += round($product['price'], 2);
         }
     }
-
     $_SESSION['total_price'] = $totalValue;
 }
 whatIsHappening();

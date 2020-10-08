@@ -80,6 +80,7 @@
         </label>
 
         <button type="submit" name="button" class="btn btn-primary">Order!</button>
+        <button type="submit" name="save" class="btn btn-primary">save order!</button>
     </form>
 
     <footer>You already ordered <strong>&euro; <?php echo $_SESSION['total_price'] ?></strong> in food and drinks.</footer>

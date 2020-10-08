@@ -132,6 +132,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $zip_code_style = $error_style;
         }
     }
+    if(empty($_SESSION['products'])) {
+        $productErr = "Select at least one item!";
+    } else {
+        $productErr = '';
+    }
 }
 
 // listen to order button to check if the order is fill fulled and save the data to the session variable
@@ -147,6 +152,9 @@ if(isset($_POST['button'])) {
 
         mail($email, "your food order", $success_order);
     }
+}
+
+if(isset($_POST['button']) || isset($_POST['save'])) {
     $_SESSION['email'] = $email;
     $_SESSION['street'] = $street;
     $_SESSION['street_number'] = $street_number;
@@ -163,11 +171,6 @@ if(isset($_POST['button'])) {
             $_SESSION['products'] = array_unique($_SESSION['products']);
         }
     }
-    if(empty($_SESSION['products'])) {
-        $productErr = "Select at least one item!";
-    } else {
-        $productErr = '';
-    }
 
     $all_products = array_merge($food, $drink);
     foreach ($all_products AS $i => $product) {
@@ -175,8 +178,10 @@ if(isset($_POST['button'])) {
             $totalValue += round($product['price'], 2);
         }
     }
+
     $_SESSION['total_price'] = $totalValue;
 }
+
 whatIsHappening();
 
 function test_input($data) {

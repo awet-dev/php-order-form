@@ -41,12 +41,12 @@ if (isset($_GET['food']) && $_GET['food'] == 0) {
 }
 
 $_SESSION['total'] = 0;
+define('customerEmail', "white@gmail.com");
 
-$emailErrMsg = $zipCodeErrMsg = $successMsg = "";
+$emailErrMsg = $zipCodeErrMsg = $successMsg = $productErrMsg = "";
 $emailErrStyle = $zipCodeErrStyle = "";
 
 $errorStyle = "border: 1px solid red;";
-$_SESSION['success'] = true;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -79,32 +79,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
        foreach ($_POST['products'] as $product) {
            $_SESSION['total'] += $product;
        }
+   } else {
+       $productErrMsg = "Select at least one product!";
    }
 
    $totalPrice = $_SESSION['total'];
 
     // save the input if there is error
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($zip_code) !== 4) {
+    if ( !empty($emailErrMsg) || !empty($emailErrStyle) || !empty($zipCodeErrMsg) || !empty($zipCodeErrStyle || !empty($productErrMsg)) ) {
         $_SESSION['email'] = $email;
         $_SESSION['street'] = $street;
         $_SESSION['city'] = $city;
         $_SESSION['zip_code'] = $zip_code;
         $_SESSION['street_number'] = $street_number;
+        $successMsg = "";
+    } elseif( empty($emailErrMsg) && empty($emailErrStyle) && empty($zipCodeErrMsg) && empty($zipCodeErrStyle) && empty($productErrMsg)) {
+        $successMsg = "Your order will be right there in $deliveryTime total money is $totalPrice !";
+        session_unset();
+        session_destroy();
+        // mail($email,"My subject", $successMsg);
+        // mail(customerEmail,"My subject", $successMsg);
     } else {
-        //============================ disappear when refreshed ================================//
-        if ($_SESSION['success']) {
-            $successMsg = "Your order will be right there in $deliveryTime total money is $totalPrice !";
-            mail($email,"My subject", $successMsg);
-            $_SESSION['success'] = false;
-        }
-        //===========================================// ===================================//
-        $_SESSION['email'] = "";
-        $_SESSION['street'] = "";
-        $_SESSION['city'] = "";
-        $_SESSION['street_number'] = "";
-        $_SESSION['zip_code'] = "";
+        $successMsg = "";
     }
-
 
 }
 

@@ -2,8 +2,36 @@
 //this line makes PHP behave in a more strict way
 declare(strict_types=1);
 
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 //we are going to use session variables so we need to enable sessions
 session_start();
+if (!isset($_SESSION['email'])) {
+    $_SESSION['email'] = "";
+}
+if (!isset($_SESSION['street'])) {
+    $_SESSION['street'] = "";
+}
+if (!isset($_SESSION['street_number'])) {
+    $_SESSION['street_number'] = "";
+}
+if (!isset($_SESSION['zip_code'])) {
+    $_SESSION['zip_code'] = "";
+}
+if (!isset($_SESSION['city'])) {
+    $_SESSION['city'] = "";
+}
+if (!isset($_SESSION['name'])) {
+    $_SESSION['name'] = [];
+}
+if (!isset($_SESSION['total'])) {
+    $_SESSION['total'] = 0;
+}
+if (!isset($_SESSION['express_delivery'])) {
+    $_SESSION['express_delivery'] = 0;
+}
 
 function whatIsHappening() {
     echo '<h2>$_GET</h2>';
@@ -15,7 +43,7 @@ function whatIsHappening() {
     echo '<h2>$_SESSION</h2>';
     var_dump($_SESSION);
 }
-whatIsHappening();
+// whatIsHappening();
 
 //your products with their price.
 $food = [
@@ -40,13 +68,12 @@ if (isset($_GET['food']) && $_GET['food'] == 0) {
     $products = $food;
 }
 
-$_SESSION['total'] = 0;
 define('customerEmail', "white@gmail.com");
-
 $emailErrMsg = $zipCodeErrMsg = $successMsg = $productErrMsg = "";
 $emailErrStyle = $zipCodeErrStyle = "";
-
 $errorStyle = "border: 1px solid red;";
+$totalPrice = 0;
+$order = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -67,44 +94,69 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // expected delivery time
-    if (isset($_POST['express_delivery'])) {
+    if (isset($_POST['express_delivery']) && empty($_SESSION['express_delivery'])) {
         $deliveryTime = 45 . "min";
         $_SESSION['total'] += $_POST['express_delivery'];
+        $_SESSION['express_delivery'] = $_POST['express_delivery'];
     } else {
         $deliveryTime = 2 . "hr";
     }
 
-    // total money for the selected order
-   if (isset($_POST['products'])) {
-       foreach ($_POST['products'] as $product) {
-           $_SESSION['total'] += $product;
-       }
-   } else {
-       $productErrMsg = "Select at least one product!";
-   }
+    $allProducts = array_merge($food, $drink);
+    $productName = [];
+    foreach ($allProducts as $product) {
+        array_push($productName, $product['name']);
+    }
 
-   $totalPrice = $_SESSION['total'];
+    if (!empty($_POST['products'])) {
+        foreach ($_POST['products'] as $product) {
+            if (!empty($_SESSION['name'] && !in_array($product, $_SESSION['name']))) {
+                array_push($_SESSION['name'], $product);
+                $key = array_search($product, $productName);
+                $_SESSION['total'] += $allProducts[$key]['price'];
+            } elseif (empty($_SESSION['name'] && in_array($product, $_SESSION['name']))) {
+                array_push($_SESSION['name'], $product);
+                $key = array_search($product, $productName);
+                $_SESSION['total'] += $allProducts[$key]['price'];
+            }
+        }
+    } else {
+        $productErrMsg = "Select at least one product!";
+    }
 
     // save the input if there is error
-    if ( !empty($emailErrMsg) || !empty($emailErrStyle) || !empty($zipCodeErrMsg) || !empty($zipCodeErrStyle || !empty($productErrMsg)) ) {
+    if ( !empty($emailErrMsg) || !empty($emailErrStyle) || !empty($zipCodeErrMsg) || !empty($zipCodeErrStyle || !empty($productErrMsg) || !empty($_POST['cart'])) ) {
         $_SESSION['email'] = $email;
         $_SESSION['street'] = $street;
-        $_SESSION['city'] = $city;
-        $_SESSION['zip_code'] = $zip_code;
         $_SESSION['street_number'] = $street_number;
+        $_SESSION['zip_code'] = $zip_code;
+        $_SESSION['city'] = $city;
         $successMsg = "";
-    } elseif( empty($emailErrMsg) && empty($emailErrStyle) && empty($zipCodeErrMsg) && empty($zipCodeErrStyle) && empty($productErrMsg)) {
-        $successMsg = "Your order will be right there in $deliveryTime total money is $totalPrice !";
-        session_unset();
-        session_destroy();
-        // mail($email,"My subject", $successMsg);
-        // mail(customerEmail,"My subject", $successMsg);
+    } elseif( empty($emailErrMsg) && empty($emailErrStyle) && empty($zipCodeErrMsg) && empty($zipCodeErrStyle) && empty($productErrMsg) && !empty($_POST['order'])) {
+        $totalPrice = $_SESSION['total'];
+        $order = $_SESSION['name'];
+        $_SESSION['email'] = "";
+        $_SESSION['street'] = "";
+        $_SESSION['street_number'] = "";
+        $_SESSION['zip_code'] = "";
+        $_SESSION['city'] = "";
+        $_SESSION['name'] = [];
+        $_SESSION['express_delivery'] = 0;
+        $_SESSION['total'] = 0;
+        $successMsg = "Your order will be right there in $deliveryTime total money is $totalPrice!";
+        mail($email,"My subject", $successMsg);
+        mail(customerEmail,"My subject", $successMsg);
     } else {
         $successMsg = "";
     }
 
 }
 
+function listOrder($orders) {
+    foreach ($orders as $order) {
+        echo "<li>$order</li>";
+    }
+}
 
 function test_input($data) {
     $data = trim($data);

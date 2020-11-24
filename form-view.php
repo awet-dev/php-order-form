@@ -62,25 +62,34 @@
             </div>
         </fieldset>
 
-        <fieldset>
-            <legend>Products</legend>
-            <?php foreach ($products AS $i => $product): ?>
-                <label>
-                    <input type="checkbox" value="<?php echo $product['price'] ?>" name="products[<?php echo $i ?>]"/> <?php echo $product['name'] ?> -
-                    &euro; <?php echo number_format($product['price'], 2) ?></label><br />
-            <?php endforeach; ?>
-            <span style="color: red"><?php echo $productErrMsg?></span>
-        </fieldset>
+        <div class="d-flex justify-content-between pr-5">
+            <fieldset>
+                <legend>Products</legend>
+                <?php foreach ($products AS $i => $product): ?>
+                    <label>
+                        <input type="checkbox" value="<?php echo $product['name'] ?>" name="products[<?php echo $i ?>]" <?php if (!empty($_SESSION['name']) && in_array($product['name'], $_SESSION['name'])) { echo "checked";} else { echo "";}?>/> <?php echo $product['name'] ?> -
+                        &euro; <?php echo number_format($product['price'], 2) ?></label><br />
+                <?php endforeach; ?>
+                <span style="color: red"><?php echo $productErrMsg?></span>
+            </fieldset>
 
+            <ol class="mr-5 list-style-position: inside">
+                <fieldset>
+                    <legend class="mr-5">Products</legend>
+                    <?php if ($order) { listOrder($order);}?>
+                </fieldset>
+            </ol>
+        </div>
         <label>
-            <input type="checkbox" name="express_delivery" value="5" />
+            <input type="checkbox" name="express_delivery" value="5" <?php echo !empty($_SESSION['express_delivery'])? "checked": ""?>/>
             Express delivery (+ 5 EUR)
         </label>
 
-        <button type="submit" class="btn btn-primary">Order!</button>
+        <input name="cart" value="Cart" type="submit" class="btn btn-primary">
+        <input name="order" value="Order" type="submit" class="btn btn-primary">
     </form>
 
-    <footer>You already ordered <strong>&euro; <?php echo $_SESSION['total'] ?></strong> in food and drinks.</footer>
+    <footer>You already ordered <strong>&euro; <?php echo $_SESSION['total']? $_SESSION['total']: $totalPrice?></strong> in food and drinks.</footer>
 </div>
 
 <style>

@@ -1,4 +1,4 @@
-# Title: Order form
+# Title: Order-Form
 
 - Repository: `php-order-form`
 - Type of Challenge: `Learning challenge`
